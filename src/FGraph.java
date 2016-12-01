@@ -3,7 +3,8 @@
  *
  * @author Victor Velechovsky
  * @version 1.0
-*/public class FGraph {
+*/
+public class FGraph {
 
 	public FD[] dependencies; // List of functional dependencies
 	public char[] attributes; // List of attributes of the relation
