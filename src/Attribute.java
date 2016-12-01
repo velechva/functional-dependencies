@@ -1,3 +1,9 @@
+/*
+ * Represents an Attribute of a relation
+ *
+ * @author Victor Velechovsky
+ * @version 1.0
+*/
 public class Attribute {
 
 	public String name;

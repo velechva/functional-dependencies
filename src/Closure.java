@@ -1,16 +1,23 @@
+/*
+ * Calculate the closure of a set of attributes
+ *
+ * @author Victor Velechovsky
+ * @version 1.0
+*/
 import java.lang.reflect.Array;
 import java.util.*;
 
 public class Closure {
 
-	public FGraph graph;
-	public char[] attributes;
+	public FGraph graph; // Functional dependency graph
+	public char[] attributes; // List of attributes of underlying relation
 
-	public FD[] dependencies;
+	public FD[] dependencies; // Dependencies of underlying relation
 
-	public char[] inputs;
-	public Set<Character> outputs;
+	public char[] inputs; // What the closure of is being calculated
+	public Set<Character> outputs; // Closure of the inputs
 
+	// Unit test
 	public static void main(String [] args) {
 		// Names of the functional dependencies
 		char[] attributes = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
@@ -39,15 +46,22 @@ public class Closure {
 		for (Character c: closure.getClosure()) {
 			System.out.println(c.toString() + ' ');
 		}
+
 	}
 
+	/*
+	 * Calculate the closure of a set of FD's
+	 *
+	 * @param graph  - FD graph
+	 * @param inputs - input attributes
+	*/
 	public Closure(FGraph graph, char[] inputs) {
 		this.graph = graph;
 		this.inputs = inputs;
 
 		this.dependencies = graph.dependencies;
 
-		outputs			= new TreeSet<>();
+		outputs	= new TreeSet<>();
 
 		for(char c: inputs) {
 			outputs.add(c);
@@ -61,23 +75,30 @@ public class Closure {
 
 		Set<Set<Character>> powerSet = powerSet(inSet);
 
+		// Repeat 20 times
 		for(int j = 0; j < 20; j++) {
+			// For each subset of the inputs
 			for(Set<Character> cSet : powerSet) {
+				// Convert set to char array
 				char[] charArrayOfSet = new char[cSet.size()];
 
 				int i = 0;
-
 				for(Character c: cSet) {
 					charArrayOfSet[i] = c;
-
 					i++;
 				}
 
+				// Perform a one depth search
 				oneDepthSearch(charArrayOfSet);
 			}
 		}
 	}
 
+	/*
+	 * Get the calculate value of the closure
+	 *
+	 * @return A set (no duplicates) of all the attributes within the closure of the inputs
+	*/
 	public Set<Character> getClosure() {
 		return outputs;
 	}
@@ -92,6 +113,7 @@ public class Closure {
 		return newSet;
 	}
 
+	// Calculate all the subsets of a set
 	private static <T> Set<Set<T>> powerSet(Set<T> originalSet) {
 		Set<Set<T>> sets = new HashSet<Set<T>>();
 
@@ -120,11 +142,13 @@ public class Closure {
 		return sets;
 	}
 
+	// Perform a one-depth-deep search by checking all possible FD edges
 	private void oneDepthSearch(char[] start) {
 		for (FD fd : dependencies) {
+			// If you have all the LHS elements to reach the RHS
 			if(passes(start, fd.from)) {
+				// Add the RHS to the set
 				addToSet(fd);
-				printSet();
 			}
 		}
 	}
